@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.pyc
+
+# Environment & Secrets
+.env
+*.env
+!.env.example
+frontend/.env
+ytdlp-service/.env
+
+# Build outputs
+dist/
+frontend/dist/
+build/
+*.egg-info/
+
+# Testing & Cache
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
