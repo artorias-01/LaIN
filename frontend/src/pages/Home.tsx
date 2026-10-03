@@ -63,7 +63,7 @@ const ContinueListening: React.FC<{ userId: string }> = ({ userId }) => {
 export const Home: React.FC = () => {
   const [searchParams] = useSearchParams()
   const searchQuery = searchParams.get('q') || ''
-  const { user } = useAuthStore()
+  const { user, isGuest } = useAuthStore()
   const { results, isSearching, error, search } = useSearch()
   const { updateNowPlaying } = useNearby()
 
@@ -112,11 +112,14 @@ export const Home: React.FC = () => {
             {!user && (
               <div className="empty-state">
                 <span className="prompt-line">
+                  {isGuest ? 'guest mode — ' : ''}
                   <a href="/login" style={{ color: 'var(--accent2)' }}>log in</a> to see your
                   history and nearby listeners
                 </span>
                 <span className="prompt-line" style={{ color: 'var(--fg-dim)', fontSize: '0.78rem' }}>
-                  or search for music above to start playing
+                  {isGuest
+                    ? 'search and playback work fine as a guest — those two features need a real account'
+                    : 'or search for music above to start playing'}
                 </span>
               </div>
             )}

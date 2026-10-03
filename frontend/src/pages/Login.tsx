@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
+import { useAuthStore } from '@/store/authStore'
+import { isSupabaseConfigured } from '@/lib/supabaseClient'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 
 export const Login: React.FC = () => {
   const { signIn } = useAuth()
+  const { enterGuestMode } = useAuthStore()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -15,6 +18,14 @@ export const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+
+    if (!isSupabaseConfigured) {
+      setError(
+        'Supabase isn\u2019t connected yet, so login can\u2019t reach a real account. ' +
+        'Use "continue as guest" below to try the rest of the app.'
+      )
+      return
+    }
 
     if (!email || !password) {
       setError('Email and password are required')
@@ -30,6 +41,11 @@ export const Login: React.FC = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleGuest = () => {
+    enterGuestMode()
+    navigate('/home', { replace: true })
   }
 
   return (
@@ -67,6 +83,24 @@ export const Login: React.FC = () => {
             $ login
           </Button>
         </form>
+
+        <div className="auth-divider" style={{ margin: 'var(--s-3) 0', textAlign: 'center', color: 'var(--fg-dim)', fontSize: '0.75rem' }}>
+          — or —
+        </div>
+
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          onClick={handleGuest}
+          style={{ width: '100%' }}
+        >
+          $ continue as guest
+        </Button>
+        <p style={{ fontSize: '0.72rem', color: 'var(--fg-dim)', marginTop: 'var(--s-2)', textAlign: 'center' }}>
+          browse and play music without an account — history, liked tracks, and nearby
+          listeners need a real login
+        </p>
 
         <div className="auth-footer">
           no account?{' '}

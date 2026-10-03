@@ -7,9 +7,10 @@ import { Login } from '@/pages/Login'
 import { Signup } from '@/pages/Signup'
 import { Home } from '@/pages/Home'
 
-// Protected route wrapper
+// Protected route wrapper — also lets guests through, since guest mode is an
+// explicit, honest way to preview the app without a real Supabase account.
 const Protected: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, isLoading } = useAuthStore()
+  const { user, isGuest, isLoading } = useAuthStore()
   if (isLoading) {
     return (
       <div
@@ -27,7 +28,7 @@ const Protected: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </div>
     )
   }
-  if (!user) return <Navigate to="/login" replace />
+  if (!user && !isGuest) return <Navigate to="/login" replace />
   return <>{children}</>
 }
 

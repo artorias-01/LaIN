@@ -2,14 +2,17 @@ import React, { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { GlitchWordmark, GlitchWordmarkHandle } from './GlitchWordmark'
 import { TypingLine } from './TypingLine'
-import { supabase } from '@/lib/supabaseClient'
+import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient'
 
 export const HeroSection: React.FC = () => {
   const glitchRef = useRef<GlitchWordmarkHandle>(null)
 
   // Listen to Supabase Realtime nearby listener events
-  // When a new nearby listener appears, fire the glitch pulse as a functional signal
+  // When a new nearby listener appears, fire the glitch pulse as a functional signal.
+  // Skipped entirely when Supabase isn't connected yet, so the landing page doesn't
+  // spend time retrying a websocket connection that can never succeed.
   useEffect(() => {
+    if (!isSupabaseConfigured) return
     const channel = supabase
       .channel('hero-nearby-signal')
       .on(

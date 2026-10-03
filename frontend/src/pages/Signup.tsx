@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
+import { useAuthStore } from '@/store/authStore'
+import { isSupabaseConfigured } from '@/lib/supabaseClient'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 
 export const Signup: React.FC = () => {
   const { signUp } = useAuth()
+  const { enterGuestMode } = useAuthStore()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [username, setUsername] = useState('')
@@ -15,9 +18,22 @@ export const Signup: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
+  const handleGuest = () => {
+    enterGuestMode()
+    navigate('/home', { replace: true })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+
+    if (!isSupabaseConfigured) {
+      setError(
+        'Supabase isn\u2019t connected yet, so sign up can\u2019t reach a real account. ' +
+        'Use "continue as guest" below to try the rest of the app.'
+      )
+      return
+    }
 
     if (!email || !username || !password) {
       setError('All fields are required')
@@ -120,6 +136,20 @@ export const Signup: React.FC = () => {
             $ create_account
           </Button>
         </form>
+
+        <div className="auth-divider" style={{ margin: 'var(--s-3) 0', textAlign: 'center', color: 'var(--fg-dim)', fontSize: '0.75rem' }}>
+          — or —
+        </div>
+
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          onClick={handleGuest}
+          style={{ width: '100%' }}
+        >
+          $ continue as guest
+        </Button>
 
         <div className="auth-footer">
           already have an account?{' '}
