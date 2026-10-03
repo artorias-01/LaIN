@@ -17,7 +17,7 @@ export const useAuth = () => {
           profile,
         })
       } else {
-        setUser(null)
+        clearUser()
       }
     })
 

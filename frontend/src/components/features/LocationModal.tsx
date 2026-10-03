@@ -60,7 +60,7 @@ export const LocationModal: React.FC<LocationModalProps> = ({
         <div
           style={{
             padding: 'var(--s-3)',
-            background: 'rgba(0, 255, 65, 0.04)',
+            background: 'rgba(255, 107, 107, 0.04)',
             borderLeft: '2px solid var(--accent2)',
             fontSize: '0.8rem',
             color: 'var(--fg-muted)',

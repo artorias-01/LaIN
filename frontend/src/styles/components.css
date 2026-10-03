@@ -31,7 +31,7 @@
   color: var(--accent2);
 }
 .btn-primary:hover {
-  background: rgba(0, 255, 65, 0.08);
+  background: rgba(255, 107, 107, 0.08);
   border-color: var(--accent2);
 }
 
@@ -234,7 +234,7 @@
 }
 .sidebar-icon-btn:hover, .sidebar-icon-btn.active {
   color: var(--accent2);
-  background: rgba(0, 255, 65, 0.06);
+  background: rgba(255, 107, 107, 0.06);
 }
 .sidebar-icon-btn.active { color: var(--accent); }
 
@@ -655,7 +655,7 @@
   transition: background var(--transition), border-color var(--transition);
 }
 .toggle-switch.on {
-  background: rgba(0, 255, 65, 0.15);
+  background: rgba(255, 107, 107, 0.15);
   border-color: var(--accent2);
 }
 .toggle-knob {
@@ -825,8 +825,8 @@
   transition: background var(--transition), box-shadow var(--transition);
 }
 .cta-btn:hover {
-  background: rgba(0, 255, 65, 0.06);
-  box-shadow: 0 0 16px rgba(0, 255, 65, 0.12);
+  background: rgba(255, 107, 107, 0.06);
+  box-shadow: 0 0 16px rgba(255, 107, 107, 0.12);
   color: var(--accent2);
 }
 .cta-btn-secondary {
