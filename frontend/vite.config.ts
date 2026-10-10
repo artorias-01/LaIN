@@ -14,6 +14,7 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    allowedHosts: ['.trycloudflare.com'],
     proxy: {
       // Proxy yt-dlp service calls in dev to avoid CORS issues
       '/ytapi': {

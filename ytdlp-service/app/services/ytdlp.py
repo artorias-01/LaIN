@@ -7,6 +7,7 @@ yt-dlp subprocess wrapper with:
 """
 import asyncio
 import json
+import logging
 import time
 import re
 import shutil
@@ -14,6 +15,8 @@ import sys
 from typing import Any, Dict, List, Optional
 from dataclasses import dataclass
 from app.config import settings
+
+logger = logging.getLogger(__name__)
 
 
 def _get_ytdlp_base_cmd() -> List[str]:
@@ -169,11 +172,10 @@ async def search_music(query: str) -> List[dict]:
     if cached is not None:
         return cached
 
-    search_term = f"ytsearch20:{query}"
+    search_term = f"ytsearch10:{query}"
     cmd = [
         *_get_ytdlp_base_cmd(),
         "--dump-json",
-        "--flat-playlist",
         "--no-warnings",
         "--ignore-errors",
         search_term,
@@ -189,8 +191,13 @@ async def search_music(query: str) -> List[dict]:
     except asyncio.TimeoutError:
         raise RuntimeError("yt-dlp search timed out after 30s")
 
+    raw_lines = stdout.decode("utf-8", errors="replace").strip().splitlines()
+    logger.info(
+        "search_music(%r): yt-dlp returned %d raw results", query, len(raw_lines)
+    )
+
     results: List[dict] = []
-    for line in stdout.decode("utf-8", errors="replace").strip().splitlines():
+    for line in raw_lines:
         line = line.strip()
         if not line:
             continue
@@ -203,6 +210,13 @@ async def search_music(query: str) -> List[dict]:
             results.append(_normalize_result(info))
             if len(results) >= settings.max_search_results:
                 break
+
+    logger.info(
+        "search_music(%r): %d results after music filter (from %d raw)",
+        query,
+        len(results),
+        len(raw_lines),
+    )
 
     _cache.set(cache_key, results, settings.cache_ttl_seconds)
     return results
