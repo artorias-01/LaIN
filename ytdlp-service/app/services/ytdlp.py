@@ -68,6 +68,10 @@ MUSIC_KEYWORDS = {
     "electronic", "edm", "pop", "rock", "metal", "indie", "rap",
     "rnb", "r&b", "soul", "blues", "country", "folk", "punk",
     "playlist", "mix", "beats", "instrumental",
+    "soundtrack", "ost", "theme", "opening", "ending",
+    "ghibli", "anime", "score", "orchestral", "piano",
+    "acoustic", "unplugged", "live performance", "concert",
+    "mv", "m/v", "music video",
 }
 NON_MUSIC_KEYWORDS = {
     "tutorial", "how to", "explained", "review", "unboxing",
@@ -76,7 +80,7 @@ NON_MUSIC_KEYWORDS = {
     "interview", "lecture", "speech",
 }
 NON_MUSIC_CHANNEL_RE = re.compile(
-    r"(news|vlog|gaming|tech|tutorial|podcast|daily|talks?)",
+    r"\b(news|vlog|gaming|tech|tutorial|podcast|daily|talks?)\b",
     re.IGNORECASE
 )
 

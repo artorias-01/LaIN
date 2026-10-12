@@ -42,7 +42,15 @@ export const useSearch = () => {
       }
     } catch (err: any) {
       if (err?.code === 'ERR_CANCELED') return
-      setError(err?.response?.data?.detail ?? 'Search failed')
+      const status = err?.response?.status
+      const detail = err?.response?.data?.detail
+      const msg = detail
+        ? `Search failed (${status}): ${detail}`
+        : err?.message
+          ? `Search failed: ${err.message}`
+          : 'Search failed — is the yt-dlp service running?'
+      console.error('[useSearch]', msg, err)
+      setError(msg)
       setResults([])
     } finally {
       setIsSearching(false)

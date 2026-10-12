@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import { usePlayerStore } from '@/store/playerStore'
-import { usePlayer } from '@/hooks/usePlayer'
+import { usePlayerContext } from '@/providers/PlayerProvider'
 import { useNearby } from '@/hooks/useNearby'
 import type { Track } from '@/types'
 
@@ -36,7 +36,7 @@ export const NowPlaying: React.FC = () => {
     nextTrack,
     prevTrack,
   } = usePlayerStore()
-  const { togglePlay, seek } = usePlayer()
+  const { togglePlay, seek } = usePlayerContext()
   const { updateNowPlaying } = useNearby()
 
   const handleSeek = useCallback(

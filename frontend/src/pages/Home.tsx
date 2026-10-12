@@ -7,7 +7,7 @@ import { NearbyListeners } from '@/components/features/NearbyListeners'
 import { SearchResults } from '@/components/features/SearchResults'
 import { TrackCard } from '@/components/features/TrackCard'
 import { useSearch } from '@/hooks/useSearch'
-import { usePlayer } from '@/hooks/usePlayer'
+import { usePlayerStore } from '@/store/playerStore'
 import { useNearby } from '@/hooks/useNearby'
 import { useAuthStore } from '@/store/authStore'
 import { supabase } from '@/lib/supabaseClient'
@@ -67,15 +67,18 @@ export const Home: React.FC = () => {
   const { results, isSearching, error, search } = useSearch()
   const { updateNowPlaying } = useNearby()
 
-  // Initialize player with nearby listener update callback
-  usePlayer((track) => {
+  const { currentTrack } = usePlayerStore()
+
+  // Update nearby listeners when track changes (replaces old usePlayer callback)
+  useEffect(() => {
+    if (!currentTrack) return
     updateNowPlaying({
-      track_id: track.id,
-      track_title: track.title,
-      track_artist: track.artist,
-      track_thumbnail: track.thumbnail,
+      track_id: currentTrack.id,
+      track_title: currentTrack.title,
+      track_artist: currentTrack.artist,
+      track_thumbnail: currentTrack.thumbnail,
     })
-  })
+  }, [currentTrack?.id, updateNowPlaying])
 
   // Trigger search when URL query changes
   useEffect(() => {

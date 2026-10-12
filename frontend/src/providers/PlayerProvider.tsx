@@ -1,15 +1,25 @@
-import { useEffect, useRef, useCallback } from 'react'
+import React, { createContext, useContext, useEffect, useRef, useCallback } from 'react'
 import { usePlayerStore } from '@/store/playerStore'
 import { useAuthStore } from '@/store/authStore'
 import { getStreamUrl } from '@/api/client'
 import { supabase } from '@/lib/supabaseClient'
 import type { Track } from '@/types'
 
-export const usePlayer = (onTrackChange?: (track: Track) => void) => {
+// ─── Context ────────────────────────────────────────────────────────────────
+interface PlayerContextValue {
+  togglePlay: () => void
+  seek: (ratio: number) => void
+  playTrack: (track: Track, queue?: Track[]) => void
+}
+
+const PlayerContext = createContext<PlayerContextValue | null>(null)
+
+// ─── Provider (renders exactly once near the app root) ──────────────────────
+export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const {
     currentTrack, isPlaying, volume,
-    setPlaying, setProgress, setDuration, nextTrack, setCurrentTrack
+    setPlaying, setProgress, setDuration, nextTrack, setCurrentTrack,
   } = usePlayerStore()
   const { user } = useAuthStore()
 
@@ -73,9 +83,7 @@ export const usePlayer = (onTrackChange?: (track: Track) => void) => {
         thumbnail: currentTrack.thumbnail,
       }).then()
     }
-
-    onTrackChange?.(currentTrack)
-  }, [currentTrack?.id, user, onTrackChange])
+  }, [currentTrack?.id, user])
 
   // React to play/pause toggle
   useEffect(() => {
@@ -108,5 +116,16 @@ export const usePlayer = (onTrackChange?: (track: Track) => void) => {
     }
   }, [setCurrentTrack])
 
-  return { togglePlay, seek, playTrack, audioRef }
+  return (
+    <PlayerContext.Provider value={{ togglePlay, seek, playTrack }}>
+      {children}
+    </PlayerContext.Provider>
+  )
+}
+
+// ─── Consumer hook ──────────────────────────────────────────────────────────
+export const usePlayerContext = (): PlayerContextValue => {
+  const ctx = useContext(PlayerContext)
+  if (!ctx) throw new Error('usePlayerContext must be used within <PlayerProvider>')
+  return ctx
 }
